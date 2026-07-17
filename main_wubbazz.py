@@ -1,5 +1,5 @@
 from selenium import webdriver
-# from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -29,10 +29,8 @@ def generate_repeated_k_list(num_repetitions=25):
     repeated_list.append(f'K-{i} Cumul. token')
   return repeated_list
 
-# service = Service(executable_path="chromedriver.exe")
-service = webdriver.FirefoxService(executable_path="geckodriver")
-# driver = webdriver.Chrome(service=service)
-driver = webdriver.Firefox(service=service)
+service = Service(executable_path="chromedriver.exe")
+driver = webdriver.Chrome(service=service)
 
 text_files = os.listdir('textdata')
 text_files.sort(key=get_q_num)

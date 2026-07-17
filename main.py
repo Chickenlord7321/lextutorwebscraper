@@ -6,20 +6,25 @@ from selenium.webdriver.common.by import By
 from tqdm import tqdm
 import csv
 import os
+import sys
+import platform
 
 def get_id_num(e):
     return int(e[0:3])
+
 def get_q_num(e):
     q_num = e[8:10]
     if not q_num.isdigit():
         q_num = e[8]
     return int(q_num)
+
 def isnumber(num):
     try:
         float(num)
         return True
     except ValueError:
         return False
+
 def generate_repeated_k_list(num_repetitions=25):
   repeated_list = []
   for i in range(1, num_repetitions + 1):
@@ -29,8 +34,27 @@ def generate_repeated_k_list(num_repetitions=25):
     repeated_list.append(f'K-{i} Cumul. token')
   return repeated_list
 
-service = Service(executable_path="chromedriver.exe")
-driver = webdriver.Chrome(service=service)
+
+# Check if user wants to overwrite CSV file or append to it.
+msg = "Would you like to overwrite the existing CSV file or append to it?\nType 1 to APPEND\nType 2 to OVERWRITE\n> "
+answer = input(msg)
+overwrite = False
+if answer == "2":
+    overwrite = True
+elif answer != "1":
+    print("Invalid option, closing program without operation...")
+    sys.exit(0)
+
+# Check which OS we're running on and select the correct driver.
+# Code sourced from Stack Overflow: https://stackoverflow.com/questions/1854/how-to-identify-which-os-python-is-running-on#1857
+service = None
+driver = None
+if platform.system() == 'Windows':
+    service = Service(executable_path="chromedriver.exe")
+    driver = webdriver.Chrome(service=service)
+else:
+    service = webdriver.FirefoxService(executable_path="geckodriver")
+    driver = webdriver.Firefox(service=service)
 
 text_files = os.listdir('textdata')
 text_files.sort(key=get_q_num)
@@ -39,12 +63,15 @@ text_files.sort(key=get_id_num)
 numeric_data_fields = ['Subject', 'Item','Words in text (tokens)', 'Different words (types)', 'Type-token ratio (TTR)',
                                'Tokens per type', 'Lexical density', 'Tokens', 'Types', 'Families', 'Tokens per Family',
                                'Family/token ratio', 'Types per Family', 'Singleton Ratio']
-numeric_data_fields = numeric_data_fields + generate_repeated_k_list()
-data = [numeric_data_fields]
+data = []
+if overwrite:
+    # Only need to add headers if we are overwriting the file
+    numeric_data_fields = numeric_data_fields + generate_repeated_k_list()
+    data = [numeric_data_fields]
 
 for i in tqdm(range((len(text_files)))):
     id_num = text_files[i][0:6]
-    q_num = 'P' + str(get_q_num(text_files[i]))
+    q_num = 'Q' + str(get_q_num(text_files[i]))
     file_addr = "textdata/" + text_files[i]
     with open(file_addr, "r") as f:
         driver.get("https://www.lextutor.ca/vp/comp/")
@@ -88,7 +115,10 @@ for i in tqdm(range((len(text_files)))):
         data.append(numeric_data)
 driver.quit()
 
-with open('extracted_data.csv', 'w', newline='') as file:
+a_or_w = 'a'        # append
+if overwrite:
+    a_or_w = 'w'    # overwrite
+with open('extracted_data.csv', a_or_w, newline='') as file:
     writer = csv.writer(file)
     writer.writerows(data)
 
