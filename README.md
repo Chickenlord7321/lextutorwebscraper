@@ -40,7 +40,7 @@ you are operating from inside the **lextutorwebscraper** folder.
 >  - For example, if you are on a Macbook, you will want to download and open "**geckodriver-v0.37.0-macos.tar.gz**" (0.37 is the latest version as of writing).
 >  - Make sure the driver file is named "**geckodriver**"
 
-4. If you are not in PyCharm already, open the lextutorwebscraper folder in Python now. 
+4. If you are not in PyCharm already, open the lextutorwebscraper folder in PyCharm now. 
    - You can do this by clicking on the PyCharm desktop icon, then...
    - Click the icon with 4 horizontal lines in the top left corner, which opens the file options
    - Click "Open..."
