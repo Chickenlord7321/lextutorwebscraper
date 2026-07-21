@@ -53,10 +53,24 @@ you are operating from inside the **lextutorwebscraper** folder.
 ```bash
 python3 -m venv venv
 ```
+
+If this does not work in PyCharm, follow these steps instead:
+> 1. Go to **"File"** in the top left corner
+> 2. Click **"Settings"**, which will display a pop-up window
+> 3. In the left-hand-side menu of the pop-up window, go to **"Python"**
+> 4. Then **"Interpreter"**
+> 5. If a Python interpreter is already selected at the top of the window (e.g. "Python 3.14"), click **"OK"**
+
 6. Activate the environment
 
 ```bash
 source venv/bin/activate
+```
+
+Or if you are running on **Windows**....
+
+```bash
+.\venv\Scripts\activate
 ```
 
 7. Install the required packages
